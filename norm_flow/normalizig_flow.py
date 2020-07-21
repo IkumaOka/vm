@@ -12,3 +12,10 @@ class PlanarFlow:
         self.w = torch.tensor(tf.radom.truncated_normal(shape=(1, self.dim)))
         self.b = torch.zeros(1)
         self.u = torch.tensor(tf.radom.truncated_normal(shape=(1, self.dim)))
+
+    def __call__(self, z, log_q):
+        z += self.u * self.h((z*self.w).sum(-1).unsqueeze(-1) + self.b)
+        psi = self.h_prime((z*self.w).sum(-1).unsqueeze(-1) + self.b) * self.w
+        det_jacob = torch.abs(1 + (psi*self.u).sum(-1))
+        log_q -= torch.log(1e-7 + det_jacob)
+        return z, log_q
