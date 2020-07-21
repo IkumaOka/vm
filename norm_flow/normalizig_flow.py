@@ -19,3 +19,16 @@ class PlanarFlow:
         det_jacob = torch.abs(1 + (psi*self.u).sum(-1))
         log_q -= torch.log(1e-7 + det_jacob)
         return z, log_q
+
+
+class NormalizingFlow:
+    def __init__(self, K, dim):
+        self.K = K
+        self.dim = dim
+        self.planar_flow = [PlanarFlow(self.dim) for i in range(self.K)]
+
+    def __call__(self, z_0, log_q_0):
+        z, log_q = self.planar_flow[0](z_0, log_q_0)
+        for pf in self.planar_flow[1:]:
+            z, log_q = pf(z, log_q)
+        return z, log_q
