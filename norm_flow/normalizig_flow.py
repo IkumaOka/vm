@@ -5,12 +5,6 @@ import tensorflow as tf
 import numpy as np
 
 
-def initializer():
-    z_0 = np.random.randn(10, 2).astype(np.float32)
-    q_0 = np.random.randn(10).astype(np.float32)
-    return z_, q_0
-
-
 class PlanarFlow:
     def __init__(self, dim):
         self.dim = dim
